@@ -1,0 +1,29 @@
+{
+  "name": "balatro-seed-watch",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node-dev src/index.ts",
+    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js",
+    "build:blob": "node --experimental-sea-config sea-config.json",
+    "build:exe": "node -e \"require('fs').copyFileSync(process.execPath, 'balatro-seed-watch.exe')\"",
+    "build:inject": "npx postject balatro-seed-watch.exe NODE_SEA_BLOB sea-prep.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "chokidar": "^4.0.1",
+    "esbuild": "^0.24.0",
+    "pako": "^2.1.0"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@types/node": "^20",
+    "@types/pako": "^2.0.3",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.0",
+    "prettier": "^3.4.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.7.2"
+  }
+}
