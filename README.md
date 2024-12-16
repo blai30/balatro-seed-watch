@@ -1,5 +1,7 @@
 # balatro-seed-watch
 
+![image](https://github.com/user-attachments/assets/494f31cd-a106-477e-b20c-9d796a6202e5)
+
 To install dependencies:
 
 ```bash
