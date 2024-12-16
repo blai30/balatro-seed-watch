@@ -36,10 +36,10 @@ const initialize = async () => {
   const data = await loadData(profilePath)
   printRunInfo(data)
 
-  watch(profilePath, { persistent: true })
-    .on('add', onFileChanged)
-    .on('change', onFileChanged)
-    .on('unlink', onFileRemoved)
+  const watcher = watch(profilePath, { persistent: true })
+  watcher.on('add', onFileChanged)
+  watcher.on('change', onFileChanged)
+  watcher.on('unlink', onFileRemoved)
 }
 
 const onFileChanged = async (filePath: string) => {
