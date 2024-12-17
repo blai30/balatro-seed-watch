@@ -1,6 +1,6 @@
-import { watch } from 'fs'
 import os from 'os'
 import path from 'path'
+import { watch } from 'chokidar'
 import { loadData } from './load'
 
 const saveLocationMap: { [key: string]: string } = {
@@ -33,23 +33,21 @@ const initialize = async () => {
   console.log(`Profile ${loadedProfile}`)
   console.log('Press Ctrl+C to end program')
 
-  const data = await loadData(profilePath)
-  printRunInfo(data)
-
   const watcher = watch(profilePath, { persistent: true })
-  watcher.on('add', async (event, filename) => await onFileChanged(profilePath))
-  watcher.on('change', async (event, filename) => await onFileChanged(profilePath))
-  watcher.on('unlink', async (event, filename) => await onFileRemoved())
+  watcher.on('add', onFileChanged)
+  watcher.on('change', onFileChanged)
+  watcher.on('unlink', onFileRemoved)
 }
 
-const onFileChanged = async (filePath: string) => {
+const onFileChanged = async (filePath: string | Error) => {
+  if (typeof filePath !== 'string') return
   const data = await loadData(filePath)
   if (data.GAME.pseudorandom.seed === currentSeed) return
   currentSeed = data.GAME.pseudorandom.seed
   printRunInfo(data)
 }
 
-const onFileRemoved = async () => {
+const onFileRemoved = async (filePath: string | Error) => {
   console.log('File removed')
   currentSeed = ''
 }
