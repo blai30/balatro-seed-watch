@@ -37,9 +37,9 @@ const initialize = async () => {
   printRunInfo(data)
 
   const watcher = watch(profilePath, { persistent: true })
-  watcher.on('add', onFileChanged)
-  watcher.on('change', onFileChanged)
-  watcher.on('unlink', onFileRemoved)
+  watcher.on('add', async (event, filename) => await onFileChanged(profilePath))
+  watcher.on('change', async (event, filename) => await onFileChanged(profilePath))
+  watcher.on('unlink', async (event, filename) => await onFileRemoved())
 }
 
 const onFileChanged = async (filePath: string) => {
@@ -49,7 +49,7 @@ const onFileChanged = async (filePath: string) => {
   printRunInfo(data)
 }
 
-const onFileRemoved = () => {
+const onFileRemoved = async () => {
   console.log('File removed')
   currentSeed = ''
 }
