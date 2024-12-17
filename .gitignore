@@ -176,6 +176,3 @@ dist
 
 # Local History extension
 .history/
-
-# Build executable
-balatro-seed-watch.exe
