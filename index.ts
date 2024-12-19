@@ -70,4 +70,3 @@ const printRunInfo = (data) => {
 }
 
 initialize()
-
