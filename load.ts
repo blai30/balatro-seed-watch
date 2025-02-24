@@ -30,7 +30,7 @@ const fixJsonArrays = (json) => {
   const array = []
   for (const key of keys) {
     // -1 because Lua is 1-indexed
-    array[parseInt(key.slice(9)) - 1] = fixJsonArrays(json[key])
+    array[Number.parseInt(key.slice(9)) - 1] = fixJsonArrays(json[key])
   }
   return array
 }

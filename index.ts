@@ -1,7 +1,8 @@
-import os from 'os'
-import path from 'path'
+import os from 'node:os'
+import path from 'node:path'
 import { watch } from 'chokidar'
 import { loadData } from './load'
+import Elysia from 'elysia'
 
 const saveLocationMap: { [key: string]: string } = {
   win32: 'AppData/Roaming/Balatro/',
@@ -20,6 +21,7 @@ const stakeMap: { [key: string]: string } = {
 }
 
 let currentSeed = ''
+let currentRun = {}
 
 const initialize = async () => {
   console.log('Running Balatro Seed Watch')
@@ -37,6 +39,8 @@ const initialize = async () => {
   watcher.on('add', onFileChanged)
   watcher.on('change', onFileChanged)
   watcher.on('unlink', onFileRemoved)
+
+  new Elysia().get('/', () => currentRun).listen(3000)
 }
 
 const onFileChanged = async (filePath: string | Error) => {
@@ -44,7 +48,8 @@ const onFileChanged = async (filePath: string | Error) => {
   const data = await loadData(filePath)
   if (data.GAME.pseudorandom.seed === currentSeed) return
   currentSeed = data.GAME.pseudorandom.seed
-  printRunInfo(data)
+  currentRun = getRunInfo(data)
+  console.log(currentRun)
 }
 
 const onFileRemoved = async (filePath: string | Error) => {
@@ -53,20 +58,24 @@ const onFileRemoved = async (filePath: string | Error) => {
 }
 
 // @ts-expect-error: data is json
-const printRunInfo = (data) => {
+const getRunInfo = (data) => {
   const seed = data.GAME.pseudorandom.seed
   const deck = data.GAME.selected_back_key.name
   const stake = stakeMap[data.GAME.stake]
-  console.log()
-  console.log(`Seed: ${seed}`)
-  console.log(`${deck}`)
-  console.log(`${stake}`)
 
   const url = new URL('https://mathisfun0.github.io/The-Soul/')
   url.searchParams.set('deck', deck)
   url.searchParams.set('stake', stake)
   url.searchParams.set('seed', seed)
-  console.log(url.toString())
+
+  const runInfo = {
+    timestamp: new Date(),
+    seed,
+    deck,
+    stake,
+    url: url.toString(),
+  }
+  return runInfo
 }
 
 initialize()
