@@ -3,7 +3,13 @@ const stringKeys = /\["(.*?)"\]=/g
 const numberKeys = /\[(\d+)\]=/g
 const trailingCommas = /,}/g
 
-const rawToJson = (data: string) => {
+type JsonObject = {
+  [key: string]: JsonValue
+}
+
+type JsonValue = string | number | boolean | JsonObject | JsonValue[]
+
+const rawToJson = (data: string): JsonObject => {
   const input = data
     .replace(returnPrefix, '')
     .replace(stringKeys, '"$1":')
@@ -12,40 +18,40 @@ const rawToJson = (data: string) => {
   return JSON.parse(input)
 }
 
-// @ts-expect-error: json
-const fixJsonArrays = (json) => {
+const fixJsonArrays = (json: JsonValue): JsonValue => {
   if (typeof json !== 'object' || json === null) {
     return json
   }
+  if (Array.isArray(json)) {
+    return json.map(fixJsonArrays)
+  }
   const keys = Object.keys(json)
-  if (keys.length === 0) {
-    return json
-  }
   if (!keys.every((key) => key.startsWith('NOSTRING_'))) {
+    const result: JsonObject = {}
     for (const key of keys) {
-      json[key] = fixJsonArrays(json[key])
+      result[key] = fixJsonArrays(json[key])
     }
-    return json
+    return result
   }
-  const array = []
+  const array: JsonValue[] = []
   for (const key of keys) {
-    // -1 because Lua is 1-indexed
     array[Number.parseInt(key.slice(9)) - 1] = fixJsonArrays(json[key])
   }
   return array
 }
 
-const processFile = (arrayBuffer: Uint8Array | string | ArrayBuffer) => {
+const processFile = (
+  arrayBuffer: Uint8Array | string | ArrayBuffer,
+): JsonObject => {
   const decompressed = Bun.inflateSync(arrayBuffer)
   const decoder = new TextDecoder()
   const decoded = decoder.decode(decompressed)
   const json = rawToJson(decoded)
-  return fixJsonArrays(json)
+  return fixJsonArrays(json) as JsonObject
 }
 
-export const loadData = async (path: string) => {
+export const loadData = async (path: string): Promise<JsonObject> => {
   const file = Bun.file(path)
   const arrayBuffer = await file.arrayBuffer()
-  const data = processFile(arrayBuffer)
-  return data
+  return processFile(arrayBuffer)
 }
