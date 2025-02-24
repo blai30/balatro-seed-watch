@@ -5,8 +5,9 @@
   "scripts": {
     "start": "bun run --watch index.ts",
     "build": "bun build --compile --sourcemap --bytecode index.ts --outfile dist/balatro-seed-watch",
-    "build:windows": "bun build --compile --sourcemap --bytecode --target=bun-windows-x64 index.ts --outfile dist/balatro-seed-watch",
-    "build:mac": "bun build --compile --sourcemap --bytecode --target=bun-macos-x64 index.ts --outfile dist/balatro-seed-watch"
+    "build:windows": "bun build --compile --sourcemap --bytecode --target=bun-windows-x64 index.ts --outfile dist/balatro-seed-watch_win.exe",
+    "build:mac": "bun build --compile --sourcemap --bytecode --target=bun-macos-x64 index.ts --outfile dist/balatro-seed-watch_mac",
+    "build:linux": "bun build --compile --sourcemap --bytecode --target=bun-linux-x64 index.ts --outfile dist/balatro-seed-watch_linux"
   },
   "devDependencies": {
     "@types/bun": "latest",

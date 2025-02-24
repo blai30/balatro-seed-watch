@@ -7,6 +7,7 @@ import Elysia from 'elysia'
 const saveLocationMap: { [key: string]: string } = {
   win32: 'AppData/Roaming/Balatro/',
   darwin: 'Library/Application Support/Balatro/',
+  linux: '.local/share/Steam/steamapps/compatdata/2379780/pfx/drive_c/users/steamuser/AppData/Roaming/Balatro/',
 }
 
 const stakeMap: { [key: string]: string } = {
