@@ -42,7 +42,7 @@ const STAKE_MAP = {
   8: 'Gold Stake',
 } as const
 
-const SEED_ANALYZER_BASE_URL = 'https://mathisfun0.github.io/The-Soul/'
+const SEED_ANALYZER_BASE_URL = 'https://spectralpack.github.io/TheSoul/'
 const HTTP_PORT = 3000
 
 let currentSeed = ''
